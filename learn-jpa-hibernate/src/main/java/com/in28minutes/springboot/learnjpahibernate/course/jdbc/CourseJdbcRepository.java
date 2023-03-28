@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.in28minutes.springboot.learnjpahibernate.course.Course;
+
 
 @Repository
 public class CourseJdbcRepository {
@@ -12,11 +14,20 @@ public class CourseJdbcRepository {
 	private JdbcTemplate springJdbcTemplate;
 	private static String INSERT_QUERY = 
 			"""
-					INSERT INTO course (id, name, author) VALUES (1, 'learn aws', 'in28minutes');
-					
+					INSERT INTO course (id, name, author) VALUES (?,?,?);
 			""";
 	
-	public void insert() {
-		springJdbcTemplate.update(INSERT_QUERY);
+	private static String DELETE_QUERY = 
+			"""
+					DELETE FROM course WHERE id=?;
+			""";
+	
+	public void insert(Course course) {
+		springJdbcTemplate.update(INSERT_QUERY, 
+				course.getId(), course.getName(), course.getAuthor());
+	}
+	
+	public void deleteById(long id) {
+		springJdbcTemplate.update(DELETE_QUERY, id);
 	}
 }
